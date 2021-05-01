@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>pdf</title>
+    <script src="/pawn/lib/jquery/jquery-2.1.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        var zsbh = "${zsbh}";
+        $(function () {
+            console.log($(window).height())
+            console.log($(window).width())
+            $("#pdf_iframe").height($(window).height()-10)
+            $("#pdf_iframe").width($(window).width())
+            $.get("/pawn/sys/file/url/"+zsbh,function (data) {
+                console.log(data)
+                if(data!=null && data!=""){
+                    var url = encodeURIComponent("https://www.paidangwang.net/pawn"+data);
+                    var src = "https://view.officeapps.live.com/op/embed.aspx?src="+url+"&amp;wdStartOn=1&amp;wdPrint=0&amp;wdEmbedCode=0";
+                    console.log(src)
+                    $("#pdf_iframe").attr('src', src);
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+<div class="container">
+    <iframe id="pdf_iframe" src=""
+            width="476px" height="488px" frameborder="0"></iframe>
+</div>
+</body>
+</html>

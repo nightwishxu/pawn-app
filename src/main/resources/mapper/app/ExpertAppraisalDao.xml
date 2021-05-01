@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pawn.glave.app.modules.app.dao.ExpertAppraisalDao">
+
+    <select id="findList" resultType="map">
+        SELECT
+          t.*,
+          e.NAME expertName
+        FROM
+          mini_expert_appraisal t
+        LEFT JOIN mini_experts e ON t.appraisal_user = e.CODE
+        WHERE
+          t.appraisal_id=#{appraisalId}
+        and t.state != '9'
+        <if test="name!=null and name!=''">
+            and e.name like concat('%',#{name},'%')
+        </if >
+        <if test="phone!=null and phone!=''">
+            and e.phone like concat('%',#{phone},'%')
+        </if >
+    </select>
+
+    <select id="findListByAppraisalId" resultType="map">
+        SELECT
+        t.*,
+        e.NAME expertName
+        FROM
+        mini_expert_appraisal t
+        LEFT JOIN mini_experts e ON t.appraisal_user = e.CODE
+        WHERE
+        t.appraisal_id=#{appraisalId}
+        and t.is_selection = '1'
+        and t.state != '9'
+        <if test="name!=null and name!=''">
+            and e.name like concat('%',#{name},'%')
+        </if >
+        <if test="phone!=null and phone!=''">
+            and e.phone like concat('%',#{phone},'%')
+        </if >
+    </select>
+</mapper>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery步骤条step插件</title>
+    <link rel="stylesheet" href="./css/step.css">
+</head>
+<body>
+<style>
+    .box,.container{
+        clear:both;
+    }
+    pre{
+        background: #f2f2f2;
+        color:#000;
+        width:800px;
+        margin:0 auto;
+        border: 1px solid #dee0e1;
+        -webkit-box-shadow: inset 1px 1px 2px #ddd;
+        -moz-box-shadow: inset 1px 1px 2px #ddd;
+        box-shadow: inset 1px 1px 2px #ddd;
+    }
+    em{
+        color:red;
+    }
+</style>
+<div class="box">
+    <div class="eis-stepContents">
+        <div class="eis-stepContent"><h2>第一步</h2></div>
+        <div class="eis-stepContent"><h2>第二步</h2></div>
+        <div class="eis-stepContent"><h2>第三步</h2></div>
+        <div class="eis-stepContent"><h2>第四步</h2></div>
+        <div class="eis-stepContent"><h2>第五步</h2></div>
+    </div>
+</div>
+<hr>
+<div class="container">
+    <div class="eis-stepContents">
+        <div class="eis-stepContent"><h2>第一步</h2></div>
+        <div class="eis-stepContent"><h2>第二步</h2></div>
+        <div class="eis-stepContent"><h2>第三步</h2></div>
+    </div>
+</div>
+<pre>
+    <h3>同时支持点击步骤条切换和按钮切换</h3>
+    <h3>HTML模板代码如下</h3>
+    <em>注释 主题样式名.eis-stepContents,不建议修改，eis-stepContent请不要修改 </em>
+    &lt;div class="box"&gt;
+        &lt;div class="eis-stepContents"&gt;
+            &lt;div class="eis-stepContent"&gt;
+                &lt;h2>hello word&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="eis-stepContent">步骤二&lt;/div&gt;
+            &lt;div class="eis-stepContent">步骤三&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+<h3>javascript代码如下</h3>
+    $(function(){
+            $('.box').step({
+                stepDirection:'x',// <em>x代表水平步骤，y 竖直步骤，默认x</em>
+                showStepButton:true,//<em>显示步骤按钮 上一步，下一步，默认false</em>
+                stepCount:3,// <em>step数，默认3</em>
+                stepTitles:['标题一','标题二','标题三'],//<em> step步骤标题</em>
+            });
+        })
+</pre>
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="./js/step.js"></script>
+<script>
+    $(function(){
+        $('.box').step({
+            stepDirection:'x',
+            showStepButton:true,
+            stepCount:5,
+            stepTitles:['标题一','标题二','标题三','标题四','标题5'],
+        });
+        $('.container').step({
+            stepDirection:'y',
+            showStepButton:false,
+            stepCount:3,
+            stepTitles:['标题一','标题二','标题三'],
+        });
+    })
+</script>
+</body>
+</html>

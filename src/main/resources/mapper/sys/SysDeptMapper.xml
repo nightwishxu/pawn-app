@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pawn.glave.app.modules.sys.dao.SysDeptDao">
+	<select id="deptList" resultType="com.pawn.glave.app.modules.sys.entity.SysDeptEntity">
+	SELECT
+		t.id,
+		t.name,
+		t.parent_id parentId,
+		t.create_user createUser,
+		DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%i:%s') createTime,
+		u.username createUserName
+	FROM
+		sys_dept t
+		LEFT JOIN sys_user u ON t.create_user = u.user_id
+	</select>
+
+	<insert id="save" parameterType="map">
+		insert into sys_dept (name,parent_id,create_time,create_user,activiti_sign) values
+		(#{name},#{pid},now(),#{create_user},#{activiti_sign})
+	</insert>
+
+	<update id="update" parameterType="map">
+		update sys_dept set name=#{name},activiti_sign=#{activiti_sign} where id=#{id}
+	</update>
+
+	<select id="getChildren" parameterType="int" resultType="string" >
+        select getChildDept(#{id})
+    </select>
+
+	<delete id="delete">
+		delete from sys_dept where id in
+		<foreach item="item" index="index" collection="ids" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="getUserDept" parameterType="long" resultType="map">
+		select d.dept_id,d.is_leader from sys_user t left join sys_user_dept d on t.user_id=d.user_id where t.user_id=#{user_id}
+	</select>
+
+	<insert id="saveUserDept">
+		insert into sys_user_dept(user_id,dept_id,is_leader) values (#{user_id},#{dept_id},#{isLeader})
+	</insert>
+
+	<delete id="deleteUserDept">
+		delete from sys_user_dept where user_id=#{user_id}
+	</delete>
+
+	<delete id="deleteUserByDeptId">
+		delete from sys_user_dept where dept_id in
+		<foreach item="item" index="index" collection="ids" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="findUserByDept" resultType="map" parameterType="string">
+		SELECT
+			t.*
+		FROM
+			sys_user t
+			LEFT JOIN sys_user_dept d ON t.user_id = d.user_id
+		WHERE 1=1
+		<choose>
+			<when test="dept_id !=null and dept_id != '' ">
+				and d.dept_id = #{dept_id}
+			</when>
+			<otherwise>
+				and d.dept_id is not null
+			</otherwise>
+		</choose>
+
+	</select>
+</mapper>

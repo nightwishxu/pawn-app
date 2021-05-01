@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pawn.glave.app.modules.app.dao.MiniAppraisalRecordDao">
+
+    <select id="verifyStatus" resultType="java.lang.Integer">
+        select count(0) from  mini_appraisal as ma left join mini_project_user as mpu on mpu.id =ma.create_user
+        where ma.number = #{number}
+        and mpu.phone = #{phoneNumber}
+    </select>
+</mapper>

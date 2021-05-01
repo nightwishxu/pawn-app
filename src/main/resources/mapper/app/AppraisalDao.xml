@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pawn.glave.app.modules.app.dao.AppraisalDao">
+
+    <select id="findPage" resultType="map">
+        SELECT
+        t.*,
+        u.NAME USER,
+        e.CODE,
+        e.NAME expert,
+        AT.NAME classifyName,
+        mac.three_z_file_id as threeZFileId,
+        mac.three_f_file_id as threeFFileId,
+        mac.two_z_file_id as twoZFileId,
+        mac.two_f_file_id as twoFFileId,
+        sp1.state as threePdfState,
+        sp2.state as twoPdfState
+        FROM
+        mini_appraisal t
+        LEFT JOIN mini_project_user u ON t.create_user = u.id
+        LEFT JOIN mini_experts e ON t.appraisal_user = e.
+        CODE LEFT JOIN mini_appraisal_type AT ON t.classify = AT.CODE
+        LEFT JOIN mini_user_pay p on p.appraisal_code = t.number
+        left join mini_appraisal_certificate as mac on mac.code = t.certificate_code
+        left join send_pdf as sp1 on sp1.batch_id = mac.three_z_file_id
+        left join send_pdf as sp2 on sp2.batch_id = mac.two_z_file_id
+        where 1=1
+        and p.state = 1
+        <if test="classify!=null and classify!=''">
+            and e.classify = #{classify}
+        </if >
+        <if test="state!=null and state!=''">
+            and e.state = #{state}
+        </if >
+        ORDER BY
+        create_time DESC
+    </select>
+
+    <select id="getUnidentifiedList" resultType="java.util.HashMap">
+        SELECT
+        a.id as appraisalId,
+	    a.classify,
+	    a.number,
+	    a.cover_photo,
+	    ea.name,
+	    ea.id as expertAppraisalId,
+	    aty.name as classifyName
+        FROM
+	    mini_appraisal a
+	    LEFT JOIN mini_expert_appraisal ea ON ea.appraisal_id = a.id
+	    LEFT JOIN mini_appraisal_type aty on aty.code = a.classify
+	    where (ea.state = 1 or ea.state = 4) and ea.appraisal_user = #{userCode}
+	    ORDER BY ea.allocate_time desc
+    </select>
+
+    <select id="getIdentifiedList" resultType="java.util.HashMap">
+        SELECT
+        a.id as appraisalId,
+        a.certificate_code as certificateCode,
+	    a.classify,
+        a.number,
+        a.cover_photo,
+        a.method,
+        ea.name,
+        ea.id as expertAppraisalId,
+        ac.id as certificateId,
+        aty.name as classifyName,
+        ac.three_z_file_id as threeZFileId,
+        ac.three_f_file_id as threeFFileId,
+        ac.two_z_file_id as twoZFileId,
+        ac.two_f_file_id as twoFFileId
+        FROM
+        mini_appraisal a
+        LEFT JOIN mini_expert_appraisal ea ON ea.appraisal_id = a.id
+        LEFT JOIN mini_appraisal_certificate ac ON a.certificate_code = ac.CODE
+        LEFT JOIN mini_appraisal_type aty on aty.code = a.classify
+        where ea.state != 1 and ea.appraisal_user = #{userCode}
+        ORDER BY ea.allocate_time desc
+    </select>
+
+    <select id="getPageAppraisal" resultType="map">
+        SELECT
+        a.id,
+        a.certificate_code as certificateCode,
+	    a.classify,
+        a.number,
+        a.cover_photo as coverPhoto,
+        a.source,
+        a.state,
+        a.time,
+        a.method,
+        a.name,
+        a.size,
+        a.weight,
+        a.main_material as mainMaterial,
+        a.sub_material as subMaterial,
+        a.years,
+        a.other,
+        a.market_liquidity as marketLiquidity,
+        a.value_stability as valueStability,
+        a.material_vulnerability as materialVulnerability,
+        a.pawn_price as pawnPrice,
+        a.goods_code as goodsCode,
+        a.create_user as createUser,
+        a.create_time as createTime,
+        a.appraisal_user as appraisalUser,
+        a.reason,
+        a.unpacking_video as unpackingVideo,
+        a.appraisal_video as appraisalVideo,
+        a.packing_video as packingVideo,
+        a.is_show as isShow,
+        a.again_id as againId,
+        mac.three_z_file_id as threeZFileId,
+        mac.three_f_file_id as threeFFileId,
+        mac.two_z_file_id as twoZFileId,
+        mac.two_f_file_id as twoFFileId
+        FROM
+        mini_appraisal a
+        left join mini_appraisal_certificate as mac on mac.code = a.certificate_code
+        where
+        a.create_user = ${userId}
+        <if test="state != '' and state != null">
+            and a.state in
+            <foreach collection="stateList" item="stateItem" index="index" open="(" close=")" separator=",">
+                #{stateItem}
+            </foreach>
+        </if>
+        ORDER BY
+        a.create_time DESC
+    </select>
+</mapper>

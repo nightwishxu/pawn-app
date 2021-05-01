@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pawn.glave.app.modules.app.dao.RotationDao">
+    <insert id="save">
+        insert into t_rotation
+        (
+            created_time,
+            jump_type,
+            jump_value,
+            cover_type,
+            cover_value,
+            cur_orders,
+            rotation_title
+        )
+        values
+        (
+            #{param.createdTime},
+            #{param.jumpType},
+            #{param.jumpValue},
+            #{param.coverType},
+            #{param.coverValue},
+            #{param.curOrders},
+            #{param.rotationTitle}
+        )
+    </insert>
+
+    <select id="getNewFileId" resultType="com.pawn.glave.app.modules.app.entity.RotationPojo">
+        select
+        id,
+        file_id as fileId,
+        created_time as createdTime
+        from t_rotation
+        order by id desc
+        limit 1
+    </select>
+    <select id="findPage" resultType="java.util.Map">
+        select
+        id,
+        created_time as createdTime,
+        jump_type as jumpType,
+        cover_type as coverType,
+        cover_value as coverValue,
+        cur_orders as curOrders,
+        jump_value as jumpValue,
+        rotation_title as rotationTitle
+        from t_rotation
+        order by cur_orders desc
+    </select>
+</mapper>
