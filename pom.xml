@@ -317,6 +317,12 @@
             <artifactId>activemq-pool</artifactId>
             <version>5.15.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.baidubce</groupId>
+            <artifactId>bce-java-sdk</artifactId>
+            <version>0.10.137</version>
+        </dependency>
     </dependencies>
 
     <build>

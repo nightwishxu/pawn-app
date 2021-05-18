@@ -7,4 +7,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface SysFileService extends IService<SysFileEntity> {
     R upload(MultipartFile file);
+
+    Long uploadUrl(String urlPath);
+
+    String uploadUrls(String urlPaths);
+
+    String saveUrls(String urlPaths);
 }

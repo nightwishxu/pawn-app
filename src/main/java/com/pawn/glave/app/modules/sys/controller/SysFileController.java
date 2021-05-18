@@ -5,6 +5,7 @@ import com.pawn.glave.app.common.exception.RRException;
 import com.pawn.glave.app.common.utils.R;
 import com.pawn.glave.app.modules.app.entity.CertificatePojo;
 import com.pawn.glave.app.modules.app.service.CertificateService;
+import com.pawn.glave.app.modules.app.utils.BaseUtils;
 import com.pawn.glave.app.modules.sys.entity.SysFileEntity;
 import com.pawn.glave.app.modules.sys.service.SysFileService;
 import io.swagger.annotations.Api;
@@ -44,19 +45,29 @@ public class SysFileController {
         //查询文件详情
         SysFileEntity sysFileEntity = sysFileService.getById(id);
 
-        File file = new File(fileUploadPath + sysFileEntity.getFileUrl());
-        if (!file.exists()) {
-            throw new RRException("不存在图片");
+        if (sysFileEntity.getType()== null || sysFileEntity.getType()==0){
+            File file = new File(fileUploadPath + sysFileEntity.getFileUrl());
+            if (!file.exists()) {
+                throw new RRException("不存在图片");
+            }
+            FileInputStream inputStream = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            inputStream.read(data);
+            inputStream.close();
+            response.setContentType("image/png");
+            OutputStream os = response.getOutputStream();
+            os.write(data);
+            os.flush();
+            os.close();
+        }else {
+            byte[] data = BaseUtils.toByteArray(BaseUtils.getImageInputStream(sysFileEntity.getFileUrl()));
+            response.setContentType("image/png");
+            OutputStream os = response.getOutputStream();
+            os.write(data);
+            os.flush();
+            os.close();
         }
-        FileInputStream inputStream = new FileInputStream(file);
-        byte[] data = new byte[(int) file.length()];
-        inputStream.read(data);
-        inputStream.close();
-        response.setContentType("image/png");
-        OutputStream os = response.getOutputStream();
-        os.write(data);
-        os.flush();
-        os.close();
+
     }
 
     /**

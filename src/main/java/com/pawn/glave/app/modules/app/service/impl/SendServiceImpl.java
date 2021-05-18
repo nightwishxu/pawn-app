@@ -2,6 +2,8 @@ package com.pawn.glave.app.modules.app.service.impl;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -50,13 +52,13 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
         jmsMessagingTemplate.convertAndSend(convertQueue, sendPojo);
     }
 
-    public void send1(SendPojo sendPojo) {
+    public Long send1(SendPojo sendPojo) {
         this.save(sendPojo);
         sendPojo = httpConvertPdf(sendPojo);
-        download(sendPojo);
+        return download(sendPojo);
     }
 
-    public void download(SendPojo sendPojo) {
+    public Long download(SendPojo sendPojo) {
         try {
             String url = sendPojo.getPdfUrl();
             HttpUtil.downloadFile(url, FileUtil.file("/webapp/files/pdf/" + sendPojo.getCode() + ".pdf"));
@@ -67,9 +69,12 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
             sendPojo.setPdfId(sysFileEntity.getId());
             sendPojo.setState("4");
             sendService.updateById(sendPojo);
+            return sysFileEntity.getId();
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("定时任务生成PDF文件失败{}", sendPojo.toString());
         }
+        return null;
     }
 
     public SendPojo httpConvertPdf(SendPojo sendPojo) {
@@ -92,6 +97,7 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
         try {
             HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
             JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+            log.info("httpConvertPdf status:{},response:{},info:{}", response.getStatusLine(),JSONUtil.toJsonStr(response),jsonObject!=null?jsonObject.toJSONString():null);
             if (response.getStatusLine().getStatusCode() != 200) {
                 sendPojo.setState("-1");
             } else {

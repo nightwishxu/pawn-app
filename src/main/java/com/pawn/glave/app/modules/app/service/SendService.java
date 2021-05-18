@@ -12,6 +12,6 @@ import java.util.Map;
 
 public interface SendService extends IService<SendPojo> {
     void send(SendPojo sendPojo);
-    void send1(SendPojo sendPojo);
+    Long send1(SendPojo sendPojo);
 
 }

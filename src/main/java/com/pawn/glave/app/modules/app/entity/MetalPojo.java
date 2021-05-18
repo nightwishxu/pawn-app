@@ -47,4 +47,8 @@ public class MetalPojo implements Serializable {
     @ApiModelProperty(value="备注")
     @ApiParam(value="备注")
     private String remark;
+
+    @ApiModelProperty(value="")
+    @ApiParam(value="")
+    private Integer userGoodsId;
 }

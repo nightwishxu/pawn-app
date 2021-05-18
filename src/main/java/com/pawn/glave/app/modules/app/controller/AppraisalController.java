@@ -1,5 +1,6 @@
 package com.pawn.glave.app.modules.app.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,7 +10,9 @@ import com.pawn.glave.app.modules.app.annotation.Login;
 import com.pawn.glave.app.modules.app.annotation.LoginUser;
 import com.pawn.glave.app.modules.app.entity.*;
 import com.pawn.glave.app.modules.app.service.*;
+import com.pawn.glave.app.modules.app.service.impl.PaidangApiService;
 import com.pawn.glave.app.modules.app.utils.BarCoreUtils;
+import com.pawn.glave.app.modules.app.utils.BaseUtils;
 import com.pawn.glave.app.modules.app.utils.KeyUtil;
 import com.pawn.glave.app.modules.app.utils.ListUtil;
 import com.pawn.glave.app.modules.certificate.entity.CirculationRecord;
@@ -54,6 +57,9 @@ public class AppraisalController {
     private SysFileService sysFileService;
     @Resource
     private SendService sendService;
+
+    @Resource
+    private PaidangApiService paidangApiService;
 
     @Value("${web.upload-path}")
     private String fileUploadPath;
@@ -110,6 +116,7 @@ public class AppraisalController {
         appraisalPojo.setAppraisalUser(select.getAppraisalUser());
         appraisalPojo.setReason(select.getReason());
         appraisalService.updateById(appraisalPojo);
+
         //如果是鉴定成功的 被选中了 给此专家加25积分
         if (select.getState().equals("2")) {
             IntegralPojo integralPojo = new IntegralPojo();
@@ -149,6 +156,26 @@ public class AppraisalController {
         appraisalPojo.setAppraisalUser(select.getAppraisalUser());
         appraisalPojo.setReason(select.getReason());
         appraisalService.updateById(appraisalPojo);
+
+        expertAppraisalPojo = expertAppraisalService.getById(expertAppraisalPojo.getId());
+
+        Integer authResult = null;
+        if ("3".equals(expertAppraisalPojo.getState())){
+            authResult = 2;
+        }else if ("2".equals(expertAppraisalPojo.getState())){
+            if ("6".equals(appraisalPojo.getMethod())){
+                authResult =4;
+            }
+
+        }
+
+        Certificate certificate = new Certificate(null,appraisalPojo.getName(),null,null,null,null,appraisalPojo.getWeight(),null,appraisalPojo.getMainMaterial(),
+                appraisalPojo.getSubMaterial(),appraisalPojo.getYears(),appraisalPojo.getOther(),null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMarketLiquidity())?Integer.valueOf(appraisalPojo.getMarketLiquidity()):null
+                , org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getValueStability())?Integer.valueOf(appraisalPojo.getValueStability()):null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMaterialVulnerability())?Integer.valueOf(appraisalPojo.getMaterialVulnerability()):null
+                ,null,null,null,null,appraisalPojo.getUserGoodsId(),expertAppraisalPojo.getPawnPrice(),appraisalPojo.getOther(),appraisalPojo.getSize(),"3".equals(appraisalPojo.getMethod())?expertAppraisalPojo.getPawnPrice():null,"6".equals(appraisalPojo.getMethod())?expertAppraisalPojo.getPawnPrice():null,authResult);
+        Map<String,Object> paramMap = BeanUtil.beanToMap(certificate);
+        paidangApiService.saveCertificate(paramMap);
+
         //如果是鉴定成功的 被选中了 给此专家加25积分
         if (select.getState().equals("2")) {
             IntegralPojo integralPojo = new IntegralPojo();
@@ -177,6 +204,27 @@ public class AppraisalController {
         AppraisalPojo appraisalPojo = AppraisalPojo.builder().id(id).unpackingVideo(cxVideoUploadId)
                 .packingVideo(bzVideoUploadId).appraisalVideo(jdVideoUploadId).build();
         appraisalService.updateById(appraisalPojo);
+        AppraisalPojo byId = appraisalService.getById(id);
+        if (byId!=null && byId.getUserGoodsId()!=null){
+            String bzVideo = null;
+            String cxVideo = null;
+            String jdVideo = null;
+            if(StringUtils.isNotBlank(bzVideoUploadId)){
+                SysFileEntity entity = sysFileService.getById(Long.valueOf(bzVideoUploadId));
+                bzVideo = entity.getFileUrl();
+            }
+            if(StringUtils.isNotBlank(cxVideoUploadId)){
+                SysFileEntity entity = sysFileService.getById(Long.valueOf(cxVideoUploadId));
+                cxVideo = entity.getFileUrl();
+            }
+            if(StringUtils.isNotBlank(jdVideoUploadId)){
+                SysFileEntity entity = sysFileService.getById(Long.valueOf(jdVideoUploadId));
+                jdVideo = entity.getFileUrl();
+            }
+            if (StringUtils.isNotBlank(bzVideo) || StringUtils.isNotBlank(cxVideo) || StringUtils.isNotBlank(jdVideo)){
+                paidangApiService.saveVideo(byId.getUserGoodsId(),bzVideo,cxVideo,jdVideo);
+            }
+        }
         return R.ok();
     }
 
@@ -244,11 +292,13 @@ public class AppraisalController {
         long threeWordId = Long.valueOf(threeMap.get("wordId").toString());
         long twoWordId = Long.valueOf(twoMap.get("wordId").toString());
 
-        pdf1(threeWordId, code + "F3" + threeWordId, threeWordId);
-        pdf1(twoWordId, code + "F2" + twoWordId, twoWordId);
+        Long threeZ = pdf1(threeWordId, code + "F3" + threeWordId, threeWordId);
+        Long twoZ = pdf1(twoWordId, code + "F2" + twoWordId, twoWordId);
 
         certificatePojo.setThreeFFileId(threeWordId);
         certificatePojo.setTwoFFileId(twoWordId);
+//        certificatePojo.setThreeZFileId(threeZ);
+//        certificatePojo.setTwoZFileId(twoZ);
         certificateService.save(certificatePojo);
 
         //设置证书CODE
@@ -415,12 +465,12 @@ public class AppraisalController {
         return result;
     }
 
-    public void pdf1(Long word_id, String code, long fileId) {
+    public Long pdf1(Long word_id, String code, long fileId) {
         SysFileEntity word = sysFileService.getById(word_id);
         String url = "https://www.paidangwang.net/pawn";
         SendPojo sendPojo = SendPojo.builder().code(code).state("0").wordUrl(url + word.getFileUrl()).build();
         sendPojo.setBatchId(fileId);
-        sendService.send1(sendPojo);
+        return sendService.send1(sendPojo);
     }
 
     public void pdf(Long word_id, String code) {
@@ -453,26 +503,46 @@ public class AppraisalController {
         if (sysFileEntity == null) {
             return "";
         }
-        String src = fileUploadPath + sysFileEntity.getFileUrl();
-        if (src == null || src == "") {
-            return "";
+        if (sysFileEntity.getType()!=null && sysFileEntity.getType()==1){
+            try {
+                byte[] bytes = BaseUtils.toByteArray(BaseUtils.getImageInputStream(sysFileEntity.getFileUrl()));
+                BASE64Encoder encoder = new BASE64Encoder();
+                return encoder.encode(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                return null;
+            }
+
+        }else {
+            String src = fileUploadPath + sysFileEntity.getFileUrl();
+            if (src == null || src == "") {
+                return "";
+            }
+            File file = new File(src);
+            if (!file.exists()) {
+                return "";
+            }
+            InputStream in = null;
+            byte[] data = null;
+            try {
+                in = new FileInputStream(file);
+                data = new byte[in.available()];
+                in.read(data);
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            BASE64Encoder encoder = new BASE64Encoder();
+            return encoder.encode(data);
         }
-        File file = new File(src);
-        if (!file.exists()) {
-            return "";
-        }
-        InputStream in = null;
-        byte[] data = null;
-        try {
-            in = new FileInputStream(file);
-            data = new byte[in.available()];
-            in.read(data);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        byte[] bytes = BaseUtils.toByteArray(BaseUtils.getImageInputStream("https://paidang2.cdn.bcebos.com/objectStream/2021-5-11/9188a2276a764584a8954b7fd5f94f60.jpg"));
         BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(data);
+        System.out.println(encoder.encode(bytes));
     }
 
 //    public static void setValue(JSONObject jsonObject,String[] names,int star){

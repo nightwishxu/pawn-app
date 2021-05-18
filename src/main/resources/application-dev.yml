@@ -53,3 +53,14 @@ mybatis-plus:
         log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #web:
 #    upload-path: /Users/glavesoft/uploads/pawn/
+
+baidu:
+    accessKey: a702c70536244686a2862d2febe29553
+    secretKey: 99f1ebc8bdaf4d97aa25ac9e2bfbd1c4
+    endPoint: su.bcebos.com
+    bucketName: paidang2
+bos:
+    url: https://paidang2.cdn.bcebos.com/
+
+paidang:
+    url: http://user.paidangwang.net/

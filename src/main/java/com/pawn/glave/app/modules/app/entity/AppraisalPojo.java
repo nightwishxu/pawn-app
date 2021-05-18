@@ -163,4 +163,8 @@ public class AppraisalPojo implements Serializable {
     @ApiParam(value="在次提交申请信息")
     @TableField(exist=false)
     private AppraisalAgain appraisalAgain;
+
+    @ApiModelProperty(value = "")
+    @ApiParam(value = "")
+    private Integer userGoodsId;
 }

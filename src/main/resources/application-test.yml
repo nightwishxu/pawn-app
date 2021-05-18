@@ -47,3 +47,15 @@ spring:
 #      url: jdbc:postgresql://localhost:5432/renren_security
 #      username: renren
 #      password: 123456
+
+
+baidu:
+    accessKey: a702c70536244686a2862d2febe29553
+    secretKey: 99f1ebc8bdaf4d97aa25ac9e2bfbd1c4
+    endPoint: su.bcebos.com
+    bucketName: paidang2
+bos:
+    url: https://paidang2.cdn.bcebos.com/
+
+paidang:
+    url: http://user.paidangwang.net/

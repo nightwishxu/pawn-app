@@ -93,13 +93,14 @@ public class ExpertsController {
     public R distribution(@RequestBody Map<String,Object> params){
         String ids = MapUtils.getString(params,"ids");
         String appraisalId = MapUtils.getString(params,"appraisalId");
+        AppraisalPojo app = appraisalService.getById(Long.valueOf(appraisalId));
         String[] idArr = ids.split(",");
         Date now = new Date();
         for(String id : idArr){
             if(id.indexOf("/")>-1){
                 String[] experts = id.split("/");
                 String expertCode = experts[1];
-                ExpertAppraisalPojo expertAppraisalPojo = ExpertAppraisalPojo.builder().appraisalId(appraisalId)
+                ExpertAppraisalPojo expertAppraisalPojo = ExpertAppraisalPojo.builder().appraisalId(appraisalId).userGoodsId(app.getUserGoodsId())
                         .allocateTime(now).appraisalUser(expertCode).state("1").isSelection("0").build();
                 expertAppraisalService.save(expertAppraisalPojo);
             }

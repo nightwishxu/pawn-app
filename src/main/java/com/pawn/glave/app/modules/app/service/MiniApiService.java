@@ -11,6 +11,7 @@ import com.pawn.glave.app.common.utils.StringUtils;
 import com.pawn.glave.app.modules.app.dao.AppraisalAgainDao;
 import com.pawn.glave.app.modules.app.entity.*;
 import com.pawn.glave.app.modules.app.utils.KeyUtil;
+import com.pawn.glave.app.modules.app.utils.WxPayUtil;
 import com.pawn.glave.app.modules.sys.service.AppraisalCategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -80,19 +82,28 @@ public class MiniApiService {
      * @param createUser
      * @param goodsCode
      */
-    public R saveInAppraisal(String classify, String number, String coverPhoto, Long createUser, String goodsCode, String source, MiniProjectUser miniProjectUser) {
+    public R saveInAppraisal(String classify, String number, String coverPhoto, Long createUser, String goodsCode, String source, MiniProjectUser miniProjectUser,Integer userGoodsId) {
         AppraisalPojo appraisalPojo = AppraisalPojo.builder().classify(classify).number(number)
-                .coverPhoto(coverPhoto).createUser(createUser).source(source)
+                .coverPhoto(coverPhoto).createUser(createUser).source(source).userGoodsId(userGoodsId)
                 .createTime(new Date()).goodsCode(goodsCode).state("0").method("3").build();
 
         //获取鉴定费用
         BigDecimal payMoney = getPayMoney(classify);
-
         if (payMoney.compareTo(BigDecimal.ZERO) == 0) {
             throw new RRException("提交失败");
         }
-
-        R r = wxPayService.createOrder(miniProjectUser, number, payMoney);
+        R r = new R();
+        if ("06".equals(source)){
+            String today = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+            String WXPay= WxPayUtil.createCode(5);
+            PayPojo payPojo = PayPojo.builder().orderCode(today+WXPay).nonceStr( WxPayUtil.generateUUID()).payeeId(miniProjectUser.getId()).appraisalCode(number)
+                    .state("1").createTime(new Date()).payeeName(miniProjectUser.getName())
+                    .payeePhone(miniProjectUser.getPhone()).orderInfo("app鉴定")
+                    .totalFee(0L).build();
+            payService.save(payPojo);
+        }else {
+            r = wxPayService.createOrder(miniProjectUser, number, payMoney);
+        }
         appraisalService.save(appraisalPojo);
         return r;
     }
@@ -150,7 +161,7 @@ public class MiniApiService {
      * @param miniProjectUser
      * @return
      */
-    public R saveInKdAppraisal(String classify, String number, String coverPhoto, Long createUser, String goodsCode, String source, MiniProjectUser miniProjectUser, String jdid) {
+    public R saveInKdAppraisal(String classify, String number, String coverPhoto, Long createUser, String goodsCode, String source, MiniProjectUser miniProjectUser, String jdid,Integer userGoodsId) {
         //邮寄鉴定 step1：先查看当前商品编号是否有对应的在线鉴定记录
 //        AppraisalPojo select = appraisalService.getOne(new QueryWrapper<AppraisalPojo>().eq("goods_code", goodsCode));
         AppraisalPojo select = appraisalService.getOne(new QueryWrapper<AppraisalPojo>().eq("id", jdid));
@@ -160,7 +171,7 @@ public class MiniApiService {
             throw new RRException("当前商品已存在邮寄鉴定，不能重复提交！");
         }
         //step3:当存在在线鉴定记录，并且在线鉴定记录还未完结
-        if (select != null && "3".equals(select.getMethod())
+        if (select != null && "3".equals(select.getMethod()) && userGoodsId==null
                 && ("0".equals(select.getState()) || "1".equals(select.getState()))) {
             throw new RRException("当前商品在线鉴定还未完结不能发起邮寄复检，！");
         }

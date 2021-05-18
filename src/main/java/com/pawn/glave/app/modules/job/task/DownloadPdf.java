@@ -6,7 +6,10 @@ import cn.hutool.core.lang.Console;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.pawn.glave.app.common.utils.HttpUtils;
+import com.pawn.glave.app.modules.app.entity.Certificate;
+import com.pawn.glave.app.modules.app.entity.CertificatePojo;
 import com.pawn.glave.app.modules.app.entity.SendPojo;
+import com.pawn.glave.app.modules.app.service.CertificateService;
 import com.pawn.glave.app.modules.app.service.SendService;
 import com.pawn.glave.app.modules.sys.entity.SysFileEntity;
 import com.pawn.glave.app.modules.sys.service.SysFileService;
@@ -30,6 +33,9 @@ public class DownloadPdf implements ITask {
     @Resource
     private SysFileService sysFileService;
 
+    @Resource
+    private CertificateService certificateService;
+
     @Override
     public void run(String params) {
 //        List<SendPojo> sendPojos = sendService.list(new QueryWrapper<SendPojo>().eq("state","3").last("limit 0,10"));
@@ -51,6 +57,7 @@ public class DownloadPdf implements ITask {
             sendPojo.setState("4");
             sendService.updateById(sendPojo);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("定时任务生成PDF文件失败{}", sendPojo.toString());
         }
     }

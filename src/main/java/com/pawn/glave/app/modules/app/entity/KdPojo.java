@@ -52,4 +52,8 @@ public class KdPojo implements Serializable {
     @ApiModelProperty(value="保价金额")
     @ApiParam(value="保价金额")
     private String money;
+
+    @ApiModelProperty(value="")
+    @ApiParam(value="")
+    private Integer userGoodsId;
 }

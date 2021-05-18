@@ -29,4 +29,6 @@ public class SysFileEntity implements Serializable {
     private Date fileUploadTime;
 
     private String fileOldName;
+
+    private Integer type;
 }
