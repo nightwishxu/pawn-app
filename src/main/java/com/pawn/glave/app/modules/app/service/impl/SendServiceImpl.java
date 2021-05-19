@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.jms.Queue;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
@@ -61,7 +62,12 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
     public Long download(SendPojo sendPojo) {
         try {
             String url = sendPojo.getPdfUrl();
-            HttpUtil.downloadFile(url, FileUtil.file("/webapp/files/pdf/" + sendPojo.getCode() + ".pdf"));
+            File file = FileUtil.file("/webapp/files/pdf/" + sendPojo.getCode() + ".pdf");
+            HttpUtil.downloadFile(url, file);
+            if (!file.exists() || file.length()==0){
+                return null;
+            }
+            log.info("file name:{},path:{},length:{}",file.getName(),file.getPath(),file.length());
             SysFileEntity sysFileEntity = SysFileEntity.builder().fileName(sendPojo.getCode() + ".pdf")
                     .fileOldName(sendPojo.getCode() + ".pdf")
                     .fileType("pdf").fileUploadTime(new Date()).fileUrl("/files/pdf/" + sendPojo.getCode() + ".pdf").build();
@@ -114,12 +120,18 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
                 }
 
             }
-//todo:            super.updateById(sendPojo);
+            this.updateById(sendPojo);
 
             return sendPojo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RRException("生成PDF证书失败");
         }
+    }
+
+    public static void main(String[] args) {
+//        HttpUtil.downloadFile("https://resource3.9yuntu.cn/documents/A4aH97JU0HUJcBqkHtM6Ip.pdf?Expires=3558073320&OSSAccessKeyId=LTAI4FwVgGYyBaSAv3hvmNEy&Signature=S%2FJ1GHr8kI7kvw3gtKtH51pQwAc%3D", FileUtil.file("/webapp/files/pdf/" + "11223399" + ".pdf"));
+        File file = FileUtil.file("/webapp/files/pdf/" + "11223399" + ".pdf");
+        System.out.println(file.exists());
     }
 }

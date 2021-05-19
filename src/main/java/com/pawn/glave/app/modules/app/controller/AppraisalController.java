@@ -169,8 +169,8 @@ public class AppraisalController {
 
         }
 
-        Certificate certificate = new Certificate(null,appraisalPojo.getName(),null,null,null,null,appraisalPojo.getWeight(),null,appraisalPojo.getMainMaterial(),
-                appraisalPojo.getSubMaterial(),appraisalPojo.getYears(),appraisalPojo.getOther(),null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMarketLiquidity())?Integer.valueOf(appraisalPojo.getMarketLiquidity()):null
+        Certificate certificate = new Certificate(null,appraisalPojo.getName(),null,null,null,null,appraisalPojo.getWeight(),appraisalPojo.getSubMaterial(),appraisalPojo.getMainMaterial(),
+                null,appraisalPojo.getYears(),appraisalPojo.getOther(),null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMarketLiquidity())?Integer.valueOf(appraisalPojo.getMarketLiquidity()):null
                 , org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getValueStability())?Integer.valueOf(appraisalPojo.getValueStability()):null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMaterialVulnerability())?Integer.valueOf(appraisalPojo.getMaterialVulnerability()):null
                 ,null,null,null,null,appraisalPojo.getUserGoodsId(),expertAppraisalPojo.getPawnPrice(),appraisalPojo.getOther(),appraisalPojo.getSize(),"3".equals(appraisalPojo.getMethod())?expertAppraisalPojo.getPawnPrice():null,"6".equals(appraisalPojo.getMethod())?expertAppraisalPojo.getPawnPrice():null,authResult);
         Map<String,Object> paramMap = BeanUtil.beanToMap(certificate);
@@ -387,7 +387,8 @@ public class AppraisalController {
         data.put("financialList", financialList);
         data.put("remarks", "");
 
-        String qrCode = QRCodeUtil.crateQRCode("https://mycz.glaveinfo.com/paidang/check.html?number=" + appraisal.getNumber() + "&id=" + appraisal.getId() + "&certificateId=" + certificatePojo.getId(), 100, 100);
+//        String qrCode = QRCodeUtil.crateQRCode("https://mycz.glaveinfo.com/paidang/check.html?number=" + appraisal.getNumber() + "&id=" + appraisal.getId() + "&certificateId=" + certificatePojo.getId(), 100, 100);
+        String qrCode = QRCodeUtil.crateQRCode("https://paidang2.su.bcebos.com/pawnWechat/check.html?number=" + appraisal.getNumber() + "&id=" + appraisal.getId() + "&certificateId=" + certificatePojo.getId(), 100, 100);
         data.put("ewm", qrCode);
 
         Long threeZFileId = createWordFile(data, "/home/soft/template/zs-szy-z.ftl");

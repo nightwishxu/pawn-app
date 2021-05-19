@@ -23,8 +23,8 @@
         CODE LEFT JOIN mini_appraisal_type AT ON t.classify = AT.CODE
         LEFT JOIN mini_user_pay p on p.appraisal_code = t.number
         left join mini_appraisal_certificate as mac on mac.code = t.certificate_code
-        left join send_pdf as sp1 on sp1.batch_id = mac.three_z_file_id
-        left join send_pdf as sp2 on sp2.batch_id = mac.two_z_file_id
+        left join send_pdf as sp1 on sp1.batch_id = mac.three_f_file_id
+        left join send_pdf as sp2 on sp2.batch_id = mac.two_f_file_id
         where 1=1
         and p.state = 1
         <if test="classify!=null and classify!=''">

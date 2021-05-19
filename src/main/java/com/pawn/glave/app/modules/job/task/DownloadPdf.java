@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -48,7 +49,12 @@ public class DownloadPdf implements ITask {
     public void download(SendPojo sendPojo) {
         try {
             String url = sendPojo.getPdfUrl();
-            HttpUtil.downloadFile(url, FileUtil.file("/webapp/files/pdf/" + sendPojo.getCode() + ".pdf"));
+            File file = FileUtil.file("/webapp/files/pdf/" + sendPojo.getCode() + ".pdf");
+            HttpUtil.downloadFile(url, file);
+            if (!file.exists() || file.length()==0){
+                return;
+            }
+            log.info("file name:{},path:{},length:{}",file.getName(),file.getPath(),file.length());
             SysFileEntity sysFileEntity = SysFileEntity.builder().fileName(sendPojo.getCode() + ".pdf")
                     .fileOldName(sendPojo.getCode() + ".pdf")
                     .fileType("pdf").fileUploadTime(new Date()).fileUrl("/files/pdf/" + sendPojo.getCode() + ".pdf").build();

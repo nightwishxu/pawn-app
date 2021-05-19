@@ -67,4 +67,21 @@ public class TestTask implements ITask {
 			e.printStackTrace();
 		}
 	}
+
+	public static void main(String[] args) throws Exception{
+		String host = "https://api.9yuntu.cn";
+		String path = "/execute/GetOutputResult";
+		String method = "GET";
+		String appcode = "ef1ed3bef5a94a5a90129760008bafe5";
+		Map<String, String> headers = new HashMap();
+		//最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+		headers.put("Authorization", "APPCODE " + appcode);
+		Map<String, String> querys = new HashMap();
+		querys.put("docID", "bsae28BKGHueSUMIaUlffY");
+		querys.put("outputType", "pdf");
+
+			HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
+			JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+		System.out.println(jsonObject.toJSONString());
+	}
 }
