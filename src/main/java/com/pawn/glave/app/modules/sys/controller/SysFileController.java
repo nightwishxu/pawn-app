@@ -3,6 +3,7 @@ package com.pawn.glave.app.modules.sys.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.pawn.glave.app.common.exception.RRException;
 import com.pawn.glave.app.common.utils.R;
+import com.pawn.glave.app.common.utils.StringUtils;
 import com.pawn.glave.app.modules.app.entity.CertificatePojo;
 import com.pawn.glave.app.modules.app.service.CertificateService;
 import com.pawn.glave.app.modules.app.utils.BaseUtils;
@@ -44,6 +45,11 @@ public class SysFileController {
         //获取传入参数
         //查询文件详情
         SysFileEntity sysFileEntity = sysFileService.getById(id);
+
+        // 不明原因，文件保存时会多保存一个fileUrl=原保存文件id的数据，因此根据这个反向查出正确的文件
+        if (StringUtils.isEmpty(sysFileEntity.getFileOldName()) && StringUtils.isNumeric(sysFileEntity.getFileUrl())) {
+            sysFileEntity = sysFileService.getById(Integer.valueOf(sysFileEntity.getFileUrl()));
+        }
 
         if (sysFileEntity.getType()== null || sysFileEntity.getType()==0){
             File file = new File(fileUploadPath + sysFileEntity.getFileUrl());
