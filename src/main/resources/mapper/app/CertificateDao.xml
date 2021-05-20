@@ -35,5 +35,14 @@
             and c.create_time like concat('%',#{createTime},'%')
         </if >
     </select>
+    <select id="findOneByAppraisalCode" resultType="com.pawn.glave.app.modules.app.entity.CertificatePojo">
+        SELECT
+            *
+        FROM
+            mini_appraisal_certificate
+        WHERE
+            appraisal_code=#{code}
+        LIMIT 1
+    </select>
 
 </mapper>
