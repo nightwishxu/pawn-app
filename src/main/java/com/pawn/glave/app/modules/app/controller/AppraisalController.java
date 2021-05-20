@@ -255,6 +255,66 @@ public class AppraisalController {
      * 生成证书
      *
      * @param certificatePojo
+     * @return
+     */
+    @GetMapping(value = "/certificate/createNew")
+    @Transactional
+    public R certificateCreate(CertificatePojo certificatePojo) {
+        AppraisalPojo appraisalPojo = new AppraisalPojo();
+        appraisalPojo.setName(certificatePojo.getName());
+        appraisalPojo.setSize(certificatePojo.getSize());
+        appraisalPojo.setWeight(certificatePojo.getWeight());
+        appraisalPojo.setMainMaterial(certificatePojo.getMainMaterial());
+        appraisalPojo.setSubMaterial(certificatePojo.getSubMaterial());
+        appraisalPojo.setYears(certificatePojo.getYears());
+        appraisalPojo.setOther(certificatePojo.getOther());
+        appraisalPojo.setMarketLiquidity(certificatePojo.getMarketLiquidity());
+        appraisalPojo.setValueStability(certificatePojo.getValueStability());
+        appraisalPojo.setMaterialVulnerability(certificatePojo.getMaterialVulnerability());
+        appraisalPojo.setPawnPrice(certificatePojo.getPawnPrice());
+        appraisalPojo.setMethod("3");
+        appraisalPojo.setSource("08");
+        appraisalPojo.setNumber(KeyUtil.generateUniqueKey());
+        appraisalPojo.setClassify(certificatePojo.getClassify());
+
+        String code = KeyUtil.getCertificateCode(appraisalPojo);
+        certificatePojo.setAppraisalCode(appraisalPojo.getNumber());
+        certificatePojo.setCode(code);
+        certificatePojo.setCreateTime(new Date());
+        //生成条形码
+        MultipartFile file = BarCoreUtils.generate(code);
+        if (file != null) {
+            R r = sysFileService.upload(file);
+            certificatePojo.setCodeImg(r.get("file_id").toString());
+        }
+        //生成证书文件
+        Map<String, Object> threeMap = word(certificatePojo, 3);
+        Map<String, Object> twoMap = word(certificatePojo, 2);
+
+        long threeWordId = Long.valueOf(threeMap.get("wordId").toString());
+        long twoWordId = Long.valueOf(twoMap.get("wordId").toString());
+
+        Long threeZ = pdf1(threeWordId, code + "F3" + threeWordId, threeWordId);
+        Long twoZ = pdf1(twoWordId, code + "F2" + twoWordId, twoWordId);
+
+        certificatePojo.setThreeFFileId(threeWordId);
+        certificatePojo.setTwoFFileId(twoWordId);
+//        certificatePojo.setThreeZFileId(threeZ);
+//        certificatePojo.setTwoZFileId(twoZ);
+        certificateService.save(certificatePojo);
+
+        //设置证书CODE
+        appraisalPojo.setCertificateCode(code);
+
+//        appraisalService.updateById(appraisalPojo);
+        //生成word文档格式的证书
+        return R.ok();
+    }
+
+    /**
+     * 生成证书
+     *
+     * @param certificatePojo
      * @param appraisalId
      * @return
      */

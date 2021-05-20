@@ -49,6 +49,8 @@ public class KeyUtil {
             type = "3";
         else if ("2".equals(method))
             type = "9";
+        else if ("3".equals(method))
+            type = "0";
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(attribute).append(source).append(classify).append(time).append(marketLiquidity)
                 .append(object).append(type);

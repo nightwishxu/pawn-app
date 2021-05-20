@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -166,5 +167,8 @@ public class CertificatePojo implements Serializable {
     private Long threeFFileId;
     private Long twoZFileId;
     private Long twoFFileId;
+
+    @Transient
+    private String classify;
 
 }
