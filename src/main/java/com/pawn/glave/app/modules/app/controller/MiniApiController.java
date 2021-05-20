@@ -119,9 +119,12 @@ public class MiniApiController {
     @Transactional
     public R gemstoneSave(GemstonePojo gemstonePojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (gemstonePojo.getId() == null) {
-            gemstonePojo.setPhotos(sysFileService.saveUrls(gemstonePojo.getPhotos()));
-            gemstonePojo.setVideo(sysFileService.saveUrls(gemstonePojo.getVideo()));
-            gemstonePojo.setEnclosureFile(sysFileService.saveUrls(gemstonePojo.getEnclosureFile()));
+            if ("06".equals(source)){
+                gemstonePojo.setPhotos(sysFileService.saveUrls(gemstonePojo.getPhotos()));
+                gemstonePojo.setVideo(sysFileService.saveUrls(gemstonePojo.getVideo()));
+                gemstonePojo.setEnclosureFile(sysFileService.saveUrls(gemstonePojo.getEnclosureFile()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             gemstonePojo.setGoodsCode(goodsCode);
             gemstoneService.save(gemstonePojo);
@@ -139,9 +142,12 @@ public class MiniApiController {
     @Transactional
     public R watchSave(WatchPojo watchPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (watchPojo.getId() == null) {
-            watchPojo.setPhotos(sysFileService.saveUrls(watchPojo.getPhotos()));
-            watchPojo.setVideo(sysFileService.saveUrls(watchPojo.getVideo()));
-            watchPojo.setEnclosureFile(sysFileService.saveUrls(watchPojo.getEnclosureFile()));
+            if ("06".equals(source)){
+                watchPojo.setPhotos(sysFileService.saveUrls(watchPojo.getPhotos()));
+                watchPojo.setVideo(sysFileService.saveUrls(watchPojo.getVideo()));
+                watchPojo.setEnclosureFile(sysFileService.saveUrls(watchPojo.getEnclosureFile()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             watchPojo.setGoodsCode(goodsCode);
             watchService.save(watchPojo);
@@ -159,9 +165,12 @@ public class MiniApiController {
     @Transactional
     public R luxuriesSave(LuxuriesPojo luxuriesPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (luxuriesPojo.getId() == null) {
-            luxuriesPojo.setPhotos(sysFileService.saveUrls(luxuriesPojo.getPhotos()));
-            luxuriesPojo.setVideo(sysFileService.saveUrls(luxuriesPojo.getVideo()));
-            luxuriesPojo.setEnclosureFile(sysFileService.saveUrls(luxuriesPojo.getEnclosureFile()));
+            if ("06".equals(source)){
+                luxuriesPojo.setPhotos(sysFileService.saveUrls(luxuriesPojo.getPhotos()));
+                luxuriesPojo.setVideo(sysFileService.saveUrls(luxuriesPojo.getVideo()));
+                luxuriesPojo.setEnclosureFile(sysFileService.saveUrls(luxuriesPojo.getEnclosureFile()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             luxuriesPojo.setGoodsCode(goodsCode);
             luxuriesService.save(luxuriesPojo);
@@ -179,8 +188,11 @@ public class MiniApiController {
     @Transactional
     public R jadeiteSave(JadeitePojo jadeitePojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (jadeitePojo.getId() == null) {
-            jadeitePojo.setPhotos(sysFileService.saveUrls(jadeitePojo.getPhotos()));
-            jadeitePojo.setVideo(sysFileService.saveUrls(jadeitePojo.getVideo()));
+            if ("06".equals(source)){
+                jadeitePojo.setPhotos(sysFileService.saveUrls(jadeitePojo.getPhotos()));
+                jadeitePojo.setVideo(sysFileService.saveUrls(jadeitePojo.getVideo()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             jadeitePojo.setGoodsCode(goodsCode);
             jadeiteService.save(jadeitePojo);
@@ -198,8 +210,11 @@ public class MiniApiController {
     @Transactional
     public R nephriteSave(NephritePojo nephritePojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (nephritePojo.getId() == null) {
-            nephritePojo.setPhotos(sysFileService.saveUrls(nephritePojo.getPhotos()));
-            nephritePojo.setVideo(sysFileService.saveUrls(nephritePojo.getVideo()));
+            if ("06".equals(source)){
+                nephritePojo.setPhotos(sysFileService.saveUrls(nephritePojo.getPhotos()));
+                nephritePojo.setVideo(sysFileService.saveUrls(nephritePojo.getVideo()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             nephritePojo.setGoodsCode(goodsCode);
             nephriteService.save(nephritePojo);
@@ -234,11 +249,14 @@ public class MiniApiController {
     @Transactional
     public R porcelainSave(PorcelainPojo porcelainPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (porcelainPojo.getId() == null) {
-            porcelainPojo.setFrontImg(sysFileService.saveUrls(porcelainPojo.getFrontImg()));
-            porcelainPojo.setSideImg(sysFileService.saveUrls(porcelainPojo.getSideImg()));
-            porcelainPojo.setBackImg(sysFileService.saveUrls(porcelainPojo.getBackImg()));
-            porcelainPojo.setBottomImg(sysFileService.saveUrls(porcelainPojo.getBottomImg()));
-            porcelainPojo.setMouthImg(sysFileService.saveUrls(porcelainPojo.getMouthImg()));
+            if ("06".equals(source)){
+                porcelainPojo.setFrontImg(sysFileService.saveUrls(porcelainPojo.getFrontImg()));
+                porcelainPojo.setSideImg(sysFileService.saveUrls(porcelainPojo.getSideImg()));
+                porcelainPojo.setBackImg(sysFileService.saveUrls(porcelainPojo.getBackImg()));
+                porcelainPojo.setBottomImg(sysFileService.saveUrls(porcelainPojo.getBottomImg()));
+                porcelainPojo.setMouthImg(sysFileService.saveUrls(porcelainPojo.getMouthImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             porcelainPojo.setGoodsCode(goodsCode);
             porcelainService.save(porcelainPojo);
@@ -256,11 +274,15 @@ public class MiniApiController {
     @Transactional
     public R calligraphySave(CalligraphyPojo calligraphyPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (calligraphyPojo.getId() == null) {
-            calligraphyPojo.setFrontImg(sysFileService.saveUrls(calligraphyPojo.getFrontImg()));
-            calligraphyPojo.setPostscriptImg(sysFileService.saveUrls(calligraphyPojo.getPostscriptImg()));
-            calligraphyPojo.setAutographImg(sysFileService.saveUrls(calligraphyPojo.getAutographImg()));
-            calligraphyPojo.setLocalImg(sysFileService.saveUrls(calligraphyPojo.getLocalImg()));
-            calligraphyPojo.setSettlementImg(sysFileService.saveUrls(calligraphyPojo.getSettlementImg()));
+
+            if ("06".equals(source)){
+                calligraphyPojo.setFrontImg(sysFileService.saveUrls(calligraphyPojo.getFrontImg()));
+                calligraphyPojo.setPostscriptImg(sysFileService.saveUrls(calligraphyPojo.getPostscriptImg()));
+                calligraphyPojo.setAutographImg(sysFileService.saveUrls(calligraphyPojo.getAutographImg()));
+                calligraphyPojo.setLocalImg(sysFileService.saveUrls(calligraphyPojo.getLocalImg()));
+                calligraphyPojo.setSettlementImg(sysFileService.saveUrls(calligraphyPojo.getSettlementImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             calligraphyPojo.setGoodsCode(goodsCode);
             calligraphyService.save(calligraphyPojo);
@@ -278,11 +300,15 @@ public class MiniApiController {
     @Transactional
     public R paintingSave(PaintingPojo paintingPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (paintingPojo.getId() == null) {
-            paintingPojo.setFrontImg(sysFileService.saveUrls(paintingPojo.getFrontImg()));
-            paintingPojo.setPostscriptImg(sysFileService.saveUrls(paintingPojo.getPostscriptImg()));
-            paintingPojo.setAutographImg(sysFileService.saveUrls(paintingPojo.getAutographImg()));
-            paintingPojo.setLocalImg(sysFileService.saveUrls(paintingPojo.getLocalImg()));
-            paintingPojo.setSettlementImg(sysFileService.saveUrls(paintingPojo.getSettlementImg()));
+
+            if ("06".equals(source)){
+                paintingPojo.setFrontImg(sysFileService.saveUrls(paintingPojo.getFrontImg()));
+                paintingPojo.setPostscriptImg(sysFileService.saveUrls(paintingPojo.getPostscriptImg()));
+                paintingPojo.setAutographImg(sysFileService.saveUrls(paintingPojo.getAutographImg()));
+                paintingPojo.setLocalImg(sysFileService.saveUrls(paintingPojo.getLocalImg()));
+                paintingPojo.setSettlementImg(sysFileService.saveUrls(paintingPojo.getSettlementImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             paintingPojo.setGoodsCode(goodsCode);
             paintingService.save(paintingPojo);
@@ -300,12 +326,16 @@ public class MiniApiController {
     @Transactional
     public R wenwanSave(WenwanPojo wenwanPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (wenwanPojo.getId() == null) {
-            wenwanPojo.setWholeImg(sysFileService.saveUrls(wenwanPojo.getWholeImg()));
-            wenwanPojo.setSideImg(sysFileService.saveUrls(wenwanPojo.getSideImg()));
-            wenwanPojo.setBackImg(sysFileService.saveUrls(wenwanPojo.getBackImg()));
-            wenwanPojo.setBottomImg(sysFileService.saveUrls(wenwanPojo.getBottomImg()));
-            wenwanPojo.setAngleImg(sysFileService.saveUrls(wenwanPojo.getAngleImg()));
-            wenwanPojo.setLocalImg(sysFileService.saveUrls(wenwanPojo.getLocalImg()));
+
+            if ("06".equals(source)){
+                wenwanPojo.setWholeImg(sysFileService.saveUrls(wenwanPojo.getWholeImg()));
+                wenwanPojo.setSideImg(sysFileService.saveUrls(wenwanPojo.getSideImg()));
+                wenwanPojo.setBackImg(sysFileService.saveUrls(wenwanPojo.getBackImg()));
+                wenwanPojo.setBottomImg(sysFileService.saveUrls(wenwanPojo.getBottomImg()));
+                wenwanPojo.setAngleImg(sysFileService.saveUrls(wenwanPojo.getAngleImg()));
+                wenwanPojo.setLocalImg(sysFileService.saveUrls(wenwanPojo.getLocalImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             wenwanPojo.setGoodsCode(goodsCode);
             wenwanService.save(wenwanPojo);
