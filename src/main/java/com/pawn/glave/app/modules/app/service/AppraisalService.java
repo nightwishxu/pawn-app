@@ -11,6 +11,8 @@ import java.util.Map;
 public interface AppraisalService extends IService<AppraisalPojo> {
     PageUtils findPage(Map<String,Object> params);
 
+    List<Map<String,Object>> findList( String classify, String state,List<Integer> list);
+
     List<SysFileEntity> photoList(Long id);
 
     List<Map<String,Object>> getUnidentifiedList(String userCode);

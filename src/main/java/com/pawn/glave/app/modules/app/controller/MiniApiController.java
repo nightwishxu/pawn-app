@@ -6,6 +6,7 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.google.common.collect.Lists;
 import com.pawn.glave.app.common.utils.PageUtils;
 import com.pawn.glave.app.common.utils.R;
 import com.pawn.glave.app.modules.app.AgainConstant;
@@ -30,6 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -309,6 +314,79 @@ public class MiniApiController {
             wenwanService.updateById(wenwanPojo);
             miniApiService.updateInAppraisal("11", wenwanPojo.getWholeImg(), wenwanPojo.getGoodsCode());
             return R.ok();
+        }
+    }
+
+
+
+    @RequestMapping(value = "/pawnList/find", method = RequestMethod.POST)
+    @ApiOperation(value = "", notes = "")
+    @Transactional
+    public List<Map<String, Object>> findPawnList(String userGoodsIds) {
+
+        String[] split = userGoodsIds.split(",");
+        List<Integer> idArr = Lists.newArrayList();
+        for (String s : split) {
+            idArr.add(Integer.valueOf(s));
+        }
+        List<Map<String, Object>> list = appraisalService.findList(null, "2", idArr);
+        for (Map<String, Object> map : list) {
+            String images = (String)map.getOrDefault("images","");
+            String code = (String)map.getOrDefault("code","");
+            if (StringUtils.isNotBlank(images)){
+                String[] split1 = images.split(",");
+                SysFileEntity en = sysFileService.getById(split1[0]);
+                map.put("images",en.getFileUrl());
+            }
+            Integer two_f_file_id = (Integer)map.getOrDefault("two_f_file_id",null);
+            if (two_f_file_id!=null){
+                map.put("twoFFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/" + code + "F2"+two_f_file_id);
+            }
+
+            Integer two_z_file_id = (Integer)map.getOrDefault("two_z_file_id",null);
+            if (two_z_file_id!=null){
+                map.put("twoZFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/"+code + "Z2"+two_z_file_id);
+            }
+            Integer three_f_file_id = (Integer)map.getOrDefault("three_f_file_id",null);
+            if (three_f_file_id!=null){
+                map.put("threeFFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/"+code + "F3"+three_f_file_id);
+            }
+            Integer three_z_file_id = (Integer)map.getOrDefault("three_z_file_id",null);
+            if (three_z_file_id!=null){
+                map.put("threeZFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/"+code + "Z3"+three_z_file_id);
+            }
+        }
+
+        return list;
+
+    }
+
+    @RequestMapping(value = "/pdf/view", method = RequestMethod.GET)
+    @ApiOperation(value = "", notes = "")
+    @Transactional
+    public void pdfStreamHandler(String fileId, HttpServletResponse response) {
+        //PDF文件地址
+        File file = new File("/webapp/files/pdf/" + fileId + ".pdf");
+//        File file = new File("/Users/glavesoft/pdf/" + fileId + ".pdf");
+        if (file.exists()) {
+            byte[] data;
+            FileInputStream input = null;
+            try {
+                input = new FileInputStream(file);
+                data = new byte[input.available()];
+                input.read(data);
+                response.getOutputStream().write(data);
+            } catch (Exception e) {
+                System.out.println("pdf文件处理异常：" + e);
+            } finally {
+                try {
+                    if (input != null) {
+                        input.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

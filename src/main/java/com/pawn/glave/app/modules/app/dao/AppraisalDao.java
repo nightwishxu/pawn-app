@@ -11,7 +11,8 @@ import java.util.Map;
 
 @Mapper
 public interface AppraisalDao extends BaseMapper<AppraisalPojo> {
-    IPage<Map<String, Object>> findPage(@Param("iPage") IPage iPage, @Param("classify") String classify, @Param("state") String state);
+    IPage<Map<String, Object>> findPage(@Param("iPage") IPage iPage, @Param("classify") String classify, @Param("state") String state,@Param("userGoodsIds")List<Integer> list);
+    List<Map<String, Object>> findList( @Param("classify") String classify, @Param("state") String state,@Param("userGoodsIds")List<Integer> list);
 
     List<Map<String, Object>> getUnidentifiedList(@Param("userCode") String userCode);
 
