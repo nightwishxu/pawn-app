@@ -4,12 +4,17 @@ import com.pawn.glave.app.common.exception.RRException;
 import com.pawn.glave.app.common.utils.R;
 import com.pawn.glave.app.common.utils.RedisUtils;
 import com.pawn.glave.app.common.utils.StringUtils;
+import com.pawn.glave.app.modules.app.dao.CertificateDao;
 import com.pawn.glave.app.modules.app.dao.MiniAppraisalRecordDao;
+import com.pawn.glave.app.modules.app.entity.CertificatePojo;
+import com.pawn.glave.app.modules.app.service.CertificateService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/app/mini/appraisalRecord")
@@ -17,6 +22,9 @@ public class MiniAppraisalRecordController {
 
     @Resource
     private MiniAppraisalRecordDao miniAppraisalRecordDao;
+
+    @Resource
+    private CertificateDao certificateDao;
 
     @Resource
     private RedisUtils redisUtils;
@@ -44,6 +52,14 @@ public class MiniAppraisalRecordController {
         Integer count = miniAppraisalRecordDao.verifyStatus(phoneNumber, number);
         if (count > 0) return R.ok();
         throw new RRException("无权访问");
+    }
+    @GetMapping("/findByCode")
+    public R findByCode(String code) {
+        CertificatePojo pojo = certificateDao.findOneByAppraisalCode(code);
+        Map<String, Object> map = new HashMap<>();
+        map.put("three_z_file_id", pojo.getThreeZFileId());
+        map.put("two_z_file_id", pojo.getTwoZFileId());
+        return R.ok(map);
     }
 
 }

@@ -400,4 +400,18 @@ public class StringUtils {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         return Long.valueOf(request.getAttribute(Constant.USER_KEY).toString());
     }
+
+    /**
+     * 判断是否是数字
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str) {
+        for (int i = str.length(); --i >= 0; ) {
+            if (!Character.isDigit(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

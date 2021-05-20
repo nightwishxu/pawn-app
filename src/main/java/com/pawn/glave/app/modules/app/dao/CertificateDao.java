@@ -16,4 +16,6 @@ public interface CertificateDao extends BaseMapper<CertificatePojo> {
     List<Map<String,Object>> getCertificateListByMiniUser(@Param("userId") Long userId);
 
     List<CertificatePojo> queryLtCertificate(String name, String phone, String createTime);
+
+    CertificatePojo findOneByAppraisalCode(@Param("code") String code);
 }
