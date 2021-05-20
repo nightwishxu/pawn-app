@@ -33,6 +33,45 @@
         <if test="state!=null and state!=''">
             and e.state = #{state}
         </if >
+        <if test="userGoodsIds != null and userGoodsIds.size()>0">
+            AND t.user_goods_id in
+            <foreach item="item" index="index" collection="userGoodsIds" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY
+        create_time DESC
+    </select>
+
+
+    <select id="findList" resultType="map">
+        SELECT
+        mac.*
+        FROM
+        mini_appraisal t
+        LEFT JOIN mini_project_user u ON t.create_user = u.id
+        LEFT JOIN mini_experts e ON t.appraisal_user = e.
+        CODE LEFT JOIN mini_appraisal_type AT ON t.classify = AT.CODE
+        LEFT JOIN mini_user_pay p on p.appraisal_code = t.number
+        left join mini_appraisal_certificate as mac on mac.code = t.certificate_code
+        left join send_pdf as sp1 on sp1.batch_id = mac.three_f_file_id
+        left join send_pdf as sp2 on sp2.batch_id = mac.two_f_file_id
+        where 1=1
+        and p.state = 1
+        <if test="classify!=null and classify!=''">
+            and e.classify = #{classify}
+        </if >
+        <if test="state!=null and state!=''">
+            and t.state = #{state}
+        </if >
+        <if test="userGoodsIds != null and userGoodsIds.size()>0">
+            AND t.user_goods_id in
+            <foreach item="item" index="index" collection="userGoodsIds" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         ORDER BY
         create_time DESC
     </select>

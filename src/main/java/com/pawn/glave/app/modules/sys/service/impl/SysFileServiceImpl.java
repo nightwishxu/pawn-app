@@ -176,29 +176,28 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileDao, SysFileEntity> i
     public String saveUrls(String urlPaths) {
         if (StringUtils.isEmpty(urlPaths)){
             return null;
-        } else {
-            return urlPaths;
         }
-//        String[] split = urlPaths.split(",");
-//        List<String> result = Lists.newArrayList();
-//        for (String s : split) {
-//            if (StringUtils.isNotEmpty(s)){
-//                SysFileEntity sysFileEntity = SysFileEntity
-//                        .builder()
-//                        .fileName("")
-//                        .fileOldName("")
-//                        .fileType("")
-//                        .type(1)
-//                        .fileUploadTime(new Date())
-//                        .fileUrl(s).build();
-//                this.save(sysFileEntity);
-//                result.add(String.valueOf(sysFileEntity.getId()));
-//            }
-//        }
-//        if (CollectionUtils.isNotEmpty(result)){
-//            return String.join(",",result);
-//        }else {
-//            return null;
-//        }
+
+        String[] split = urlPaths.split(",");
+        List<String> result = Lists.newArrayList();
+        for (String s : split) {
+            if (StringUtils.isNotEmpty(s)){
+                SysFileEntity sysFileEntity = SysFileEntity
+                        .builder()
+                        .fileName("")
+                        .fileOldName("")
+                        .fileType("")
+                        .type(1)
+                        .fileUploadTime(new Date())
+                        .fileUrl(s).build();
+                this.save(sysFileEntity);
+                result.add(String.valueOf(sysFileEntity.getId()));
+            }
+        }
+        if (CollectionUtils.isNotEmpty(result)){
+            return String.join(",",result);
+        }else {
+            return null;
+        }
     }
 }

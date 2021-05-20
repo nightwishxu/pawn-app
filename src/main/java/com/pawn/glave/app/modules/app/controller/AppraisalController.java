@@ -170,7 +170,7 @@ public class AppraisalController {
         }
 
         Certificate certificate = new Certificate(null,appraisalPojo.getName(),null,null,null,null,appraisalPojo.getWeight(),appraisalPojo.getSubMaterial(),appraisalPojo.getMainMaterial(),
-                null,appraisalPojo.getYears(),appraisalPojo.getOther(),null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMarketLiquidity())?Integer.valueOf(appraisalPojo.getMarketLiquidity()):null
+                appraisalPojo.getSubMaterial(),appraisalPojo.getYears(),appraisalPojo.getOther(),null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMarketLiquidity())?Integer.valueOf(appraisalPojo.getMarketLiquidity()):null
                 , org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getValueStability())?Integer.valueOf(appraisalPojo.getValueStability()):null, org.apache.commons.lang.StringUtils.isNotBlank(appraisalPojo.getMaterialVulnerability())?Integer.valueOf(appraisalPojo.getMaterialVulnerability()):null
                 ,null,null,null,null,appraisalPojo.getUserGoodsId(),expertAppraisalPojo.getPawnPrice(),appraisalPojo.getOther(),appraisalPojo.getSize(),"3".equals(appraisalPojo.getMethod())?expertAppraisalPojo.getPawnPrice():null,"6".equals(appraisalPojo.getMethod())?expertAppraisalPojo.getPawnPrice():null,authResult);
         Map<String,Object> paramMap = BeanUtil.beanToMap(certificate);

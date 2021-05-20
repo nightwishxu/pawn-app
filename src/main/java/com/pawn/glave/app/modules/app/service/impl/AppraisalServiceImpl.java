@@ -62,10 +62,16 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalDao,AppraisalPojo
         String state =  MapUtils.getString(params,"state");
         IPage iPage = new Query<ExpertsPojo>().getPage(params);
 
-        IPage<Map<String,Object>> page = appraisalDao.findPage(iPage,classify,state);
+        IPage<Map<String,Object>> page = appraisalDao.findPage(iPage,classify,state,null);
 
         return new PageUtils(page);
     }
+
+    @Override
+    public List<Map<String, Object>> findList(String classify, String state, List<Integer> list) {
+        return appraisalDao.findList(classify,state,list);
+    }
+
 
     @Override
     public List<SysFileEntity> photoList(Long id) {

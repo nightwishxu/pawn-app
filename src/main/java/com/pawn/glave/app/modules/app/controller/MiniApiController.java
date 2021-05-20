@@ -6,6 +6,7 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.google.common.collect.Lists;
 import com.pawn.glave.app.common.utils.PageUtils;
 import com.pawn.glave.app.common.utils.R;
 import com.pawn.glave.app.modules.app.AgainConstant;
@@ -30,6 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -114,9 +119,12 @@ public class MiniApiController {
     @Transactional
     public R gemstoneSave(GemstonePojo gemstonePojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (gemstonePojo.getId() == null) {
-            gemstonePojo.setPhotos(sysFileService.saveUrls(gemstonePojo.getPhotos()));
-            gemstonePojo.setVideo(sysFileService.saveUrls(gemstonePojo.getVideo()));
-            gemstonePojo.setEnclosureFile(sysFileService.saveUrls(gemstonePojo.getEnclosureFile()));
+            if ("06".equals(source)){
+                gemstonePojo.setPhotos(sysFileService.saveUrls(gemstonePojo.getPhotos()));
+                gemstonePojo.setVideo(sysFileService.saveUrls(gemstonePojo.getVideo()));
+                gemstonePojo.setEnclosureFile(sysFileService.saveUrls(gemstonePojo.getEnclosureFile()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             gemstonePojo.setGoodsCode(goodsCode);
             gemstoneService.save(gemstonePojo);
@@ -134,9 +142,12 @@ public class MiniApiController {
     @Transactional
     public R watchSave(WatchPojo watchPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (watchPojo.getId() == null) {
-            watchPojo.setPhotos(sysFileService.saveUrls(watchPojo.getPhotos()));
-            watchPojo.setVideo(sysFileService.saveUrls(watchPojo.getVideo()));
-            watchPojo.setEnclosureFile(sysFileService.saveUrls(watchPojo.getEnclosureFile()));
+            if ("06".equals(source)){
+                watchPojo.setPhotos(sysFileService.saveUrls(watchPojo.getPhotos()));
+                watchPojo.setVideo(sysFileService.saveUrls(watchPojo.getVideo()));
+                watchPojo.setEnclosureFile(sysFileService.saveUrls(watchPojo.getEnclosureFile()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             watchPojo.setGoodsCode(goodsCode);
             watchService.save(watchPojo);
@@ -154,9 +165,12 @@ public class MiniApiController {
     @Transactional
     public R luxuriesSave(LuxuriesPojo luxuriesPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (luxuriesPojo.getId() == null) {
-            luxuriesPojo.setPhotos(sysFileService.saveUrls(luxuriesPojo.getPhotos()));
-            luxuriesPojo.setVideo(sysFileService.saveUrls(luxuriesPojo.getVideo()));
-            luxuriesPojo.setEnclosureFile(sysFileService.saveUrls(luxuriesPojo.getEnclosureFile()));
+            if ("06".equals(source)){
+                luxuriesPojo.setPhotos(sysFileService.saveUrls(luxuriesPojo.getPhotos()));
+                luxuriesPojo.setVideo(sysFileService.saveUrls(luxuriesPojo.getVideo()));
+                luxuriesPojo.setEnclosureFile(sysFileService.saveUrls(luxuriesPojo.getEnclosureFile()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             luxuriesPojo.setGoodsCode(goodsCode);
             luxuriesService.save(luxuriesPojo);
@@ -174,8 +188,11 @@ public class MiniApiController {
     @Transactional
     public R jadeiteSave(JadeitePojo jadeitePojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (jadeitePojo.getId() == null) {
-            jadeitePojo.setPhotos(sysFileService.saveUrls(jadeitePojo.getPhotos()));
-            jadeitePojo.setVideo(sysFileService.saveUrls(jadeitePojo.getVideo()));
+            if ("06".equals(source)){
+                jadeitePojo.setPhotos(sysFileService.saveUrls(jadeitePojo.getPhotos()));
+                jadeitePojo.setVideo(sysFileService.saveUrls(jadeitePojo.getVideo()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             jadeitePojo.setGoodsCode(goodsCode);
             jadeiteService.save(jadeitePojo);
@@ -193,8 +210,11 @@ public class MiniApiController {
     @Transactional
     public R nephriteSave(NephritePojo nephritePojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (nephritePojo.getId() == null) {
-            nephritePojo.setPhotos(sysFileService.saveUrls(nephritePojo.getPhotos()));
-            nephritePojo.setVideo(sysFileService.saveUrls(nephritePojo.getVideo()));
+            if ("06".equals(source)){
+                nephritePojo.setPhotos(sysFileService.saveUrls(nephritePojo.getPhotos()));
+                nephritePojo.setVideo(sysFileService.saveUrls(nephritePojo.getVideo()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             nephritePojo.setGoodsCode(goodsCode);
             nephriteService.save(nephritePojo);
@@ -229,11 +249,14 @@ public class MiniApiController {
     @Transactional
     public R porcelainSave(PorcelainPojo porcelainPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (porcelainPojo.getId() == null) {
-            porcelainPojo.setFrontImg(sysFileService.saveUrls(porcelainPojo.getFrontImg()));
-            porcelainPojo.setSideImg(sysFileService.saveUrls(porcelainPojo.getSideImg()));
-            porcelainPojo.setBackImg(sysFileService.saveUrls(porcelainPojo.getBackImg()));
-            porcelainPojo.setBottomImg(sysFileService.saveUrls(porcelainPojo.getBottomImg()));
-            porcelainPojo.setMouthImg(sysFileService.saveUrls(porcelainPojo.getMouthImg()));
+            if ("06".equals(source)){
+                porcelainPojo.setFrontImg(sysFileService.saveUrls(porcelainPojo.getFrontImg()));
+                porcelainPojo.setSideImg(sysFileService.saveUrls(porcelainPojo.getSideImg()));
+                porcelainPojo.setBackImg(sysFileService.saveUrls(porcelainPojo.getBackImg()));
+                porcelainPojo.setBottomImg(sysFileService.saveUrls(porcelainPojo.getBottomImg()));
+                porcelainPojo.setMouthImg(sysFileService.saveUrls(porcelainPojo.getMouthImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             porcelainPojo.setGoodsCode(goodsCode);
             porcelainService.save(porcelainPojo);
@@ -251,11 +274,15 @@ public class MiniApiController {
     @Transactional
     public R calligraphySave(CalligraphyPojo calligraphyPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (calligraphyPojo.getId() == null) {
-            calligraphyPojo.setFrontImg(sysFileService.saveUrls(calligraphyPojo.getFrontImg()));
-            calligraphyPojo.setPostscriptImg(sysFileService.saveUrls(calligraphyPojo.getPostscriptImg()));
-            calligraphyPojo.setAutographImg(sysFileService.saveUrls(calligraphyPojo.getAutographImg()));
-            calligraphyPojo.setLocalImg(sysFileService.saveUrls(calligraphyPojo.getLocalImg()));
-            calligraphyPojo.setSettlementImg(sysFileService.saveUrls(calligraphyPojo.getSettlementImg()));
+
+            if ("06".equals(source)){
+                calligraphyPojo.setFrontImg(sysFileService.saveUrls(calligraphyPojo.getFrontImg()));
+                calligraphyPojo.setPostscriptImg(sysFileService.saveUrls(calligraphyPojo.getPostscriptImg()));
+                calligraphyPojo.setAutographImg(sysFileService.saveUrls(calligraphyPojo.getAutographImg()));
+                calligraphyPojo.setLocalImg(sysFileService.saveUrls(calligraphyPojo.getLocalImg()));
+                calligraphyPojo.setSettlementImg(sysFileService.saveUrls(calligraphyPojo.getSettlementImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             calligraphyPojo.setGoodsCode(goodsCode);
             calligraphyService.save(calligraphyPojo);
@@ -273,11 +300,15 @@ public class MiniApiController {
     @Transactional
     public R paintingSave(PaintingPojo paintingPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (paintingPojo.getId() == null) {
-            paintingPojo.setFrontImg(sysFileService.saveUrls(paintingPojo.getFrontImg()));
-            paintingPojo.setPostscriptImg(sysFileService.saveUrls(paintingPojo.getPostscriptImg()));
-            paintingPojo.setAutographImg(sysFileService.saveUrls(paintingPojo.getAutographImg()));
-            paintingPojo.setLocalImg(sysFileService.saveUrls(paintingPojo.getLocalImg()));
-            paintingPojo.setSettlementImg(sysFileService.saveUrls(paintingPojo.getSettlementImg()));
+
+            if ("06".equals(source)){
+                paintingPojo.setFrontImg(sysFileService.saveUrls(paintingPojo.getFrontImg()));
+                paintingPojo.setPostscriptImg(sysFileService.saveUrls(paintingPojo.getPostscriptImg()));
+                paintingPojo.setAutographImg(sysFileService.saveUrls(paintingPojo.getAutographImg()));
+                paintingPojo.setLocalImg(sysFileService.saveUrls(paintingPojo.getLocalImg()));
+                paintingPojo.setSettlementImg(sysFileService.saveUrls(paintingPojo.getSettlementImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             paintingPojo.setGoodsCode(goodsCode);
             paintingService.save(paintingPojo);
@@ -295,12 +326,16 @@ public class MiniApiController {
     @Transactional
     public R wenwanSave(WenwanPojo wenwanPojo, @RequestParam("source") @ApiParam(value = "来源 06app 08小程序") String source, @LoginUser MiniProjectUser miniProjectUser) {
         if (wenwanPojo.getId() == null) {
-            wenwanPojo.setWholeImg(sysFileService.saveUrls(wenwanPojo.getWholeImg()));
-            wenwanPojo.setSideImg(sysFileService.saveUrls(wenwanPojo.getSideImg()));
-            wenwanPojo.setBackImg(sysFileService.saveUrls(wenwanPojo.getBackImg()));
-            wenwanPojo.setBottomImg(sysFileService.saveUrls(wenwanPojo.getBottomImg()));
-            wenwanPojo.setAngleImg(sysFileService.saveUrls(wenwanPojo.getAngleImg()));
-            wenwanPojo.setLocalImg(sysFileService.saveUrls(wenwanPojo.getLocalImg()));
+
+            if ("06".equals(source)){
+                wenwanPojo.setWholeImg(sysFileService.saveUrls(wenwanPojo.getWholeImg()));
+                wenwanPojo.setSideImg(sysFileService.saveUrls(wenwanPojo.getSideImg()));
+                wenwanPojo.setBackImg(sysFileService.saveUrls(wenwanPojo.getBackImg()));
+                wenwanPojo.setBottomImg(sysFileService.saveUrls(wenwanPojo.getBottomImg()));
+                wenwanPojo.setAngleImg(sysFileService.saveUrls(wenwanPojo.getAngleImg()));
+                wenwanPojo.setLocalImg(sysFileService.saveUrls(wenwanPojo.getLocalImg()));
+            }
+
             String goodsCode = IdUtil.simpleUUID();
             wenwanPojo.setGoodsCode(goodsCode);
             wenwanService.save(wenwanPojo);
@@ -309,6 +344,79 @@ public class MiniApiController {
             wenwanService.updateById(wenwanPojo);
             miniApiService.updateInAppraisal("11", wenwanPojo.getWholeImg(), wenwanPojo.getGoodsCode());
             return R.ok();
+        }
+    }
+
+
+
+    @RequestMapping(value = "/pawnList/find", method = RequestMethod.POST)
+    @ApiOperation(value = "", notes = "")
+    @Transactional
+    public List<Map<String, Object>> findPawnList(String userGoodsIds) {
+
+        String[] split = userGoodsIds.split(",");
+        List<Integer> idArr = Lists.newArrayList();
+        for (String s : split) {
+            idArr.add(Integer.valueOf(s));
+        }
+        List<Map<String, Object>> list = appraisalService.findList(null, "2", idArr);
+        for (Map<String, Object> map : list) {
+            String images = (String)map.getOrDefault("images","");
+            String code = (String)map.getOrDefault("code","");
+            if (StringUtils.isNotBlank(images)){
+                String[] split1 = images.split(",");
+                SysFileEntity en = sysFileService.getById(split1[0]);
+                map.put("images",en.getFileUrl());
+            }
+            Integer two_f_file_id = (Integer)map.getOrDefault("two_f_file_id",null);
+            if (two_f_file_id!=null){
+                map.put("twoFFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/" + code + "F2"+two_f_file_id);
+            }
+
+            Integer two_z_file_id = (Integer)map.getOrDefault("two_z_file_id",null);
+            if (two_z_file_id!=null){
+                map.put("twoZFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/"+code + "Z2"+two_z_file_id);
+            }
+            Integer three_f_file_id = (Integer)map.getOrDefault("three_f_file_id",null);
+            if (three_f_file_id!=null){
+                map.put("threeFFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/"+code + "F3"+three_f_file_id);
+            }
+            Integer three_z_file_id = (Integer)map.getOrDefault("three_z_file_id",null);
+            if (three_z_file_id!=null){
+                map.put("threeZFile","http://180.76.186.228:8080/pawn/sys/file/viewPDF/"+code + "Z3"+three_z_file_id);
+            }
+        }
+
+        return list;
+
+    }
+
+    @RequestMapping(value = "/pdf/view", method = RequestMethod.GET)
+    @ApiOperation(value = "", notes = "")
+    @Transactional
+    public void pdfStreamHandler(String fileId, HttpServletResponse response) {
+        //PDF文件地址
+        File file = new File("/webapp/files/pdf/" + fileId + ".pdf");
+//        File file = new File("/Users/glavesoft/pdf/" + fileId + ".pdf");
+        if (file.exists()) {
+            byte[] data;
+            FileInputStream input = null;
+            try {
+                input = new FileInputStream(file);
+                data = new byte[input.available()];
+                input.read(data);
+                response.getOutputStream().write(data);
+            } catch (Exception e) {
+                System.out.println("pdf文件处理异常：" + e);
+            } finally {
+                try {
+                    if (input != null) {
+                        input.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
