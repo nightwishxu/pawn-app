@@ -50,8 +50,9 @@ public class MiniAppraisalRecordController {
         }
         redisUtils.delete("appraisal:" + phoneNumber);
         Integer count = miniAppraisalRecordDao.verifyStatus(phoneNumber, number);
-        if (count > 0) return R.ok();
-        throw new RRException("无权访问");
+        Map<String, Object> map = new HashMap<>();
+        map.put("checked", count > 0);
+        return R.ok(map);
     }
     @GetMapping("/findByCode")
     public R findByCode(String code) {

@@ -1,6 +1,5 @@
 package com.pawn.glave.app.modules.app.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -10,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -167,8 +165,5 @@ public class CertificatePojo implements Serializable {
     private Long threeFFileId;
     private Long twoZFileId;
     private Long twoFFileId;
-
-    @Transient
-    private String classify;
 
 }
