@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.pawn.glave.app.common.exception.RRException;
 import com.pawn.glave.app.common.utils.R;
 import com.pawn.glave.app.common.utils.StringUtils;
+import com.pawn.glave.app.common.utils.ZipUtils;
 import com.pawn.glave.app.modules.app.entity.CertificatePojo;
 import com.pawn.glave.app.modules.app.service.CertificateService;
 import com.pawn.glave.app.modules.app.utils.BaseUtils;
+import com.pawn.glave.app.modules.certificate.entity.ZipEntity;
 import com.pawn.glave.app.modules.sys.entity.SysFileEntity;
 import com.pawn.glave.app.modules.sys.service.SysFileService;
 import io.swagger.annotations.Api;
@@ -20,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/sys/file")
@@ -111,6 +115,44 @@ public class SysFileController {
                 response.getOutputStream().write(data);
             } catch (Exception e) {
                 System.out.println("pdf文件处理异常：" + e);
+            } finally {
+                try {
+                    if (input != null) {
+                        input.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @GetMapping(value = "/certificate/downLoadZip/{id}")
+    public void downLoadZip(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        CertificatePojo certificatePojo = certificateService.getById(id);
+        String base = "/webapp/files/pdf/";
+        List<String> list = new ArrayList<>();
+        String F2 = certificatePojo.getCode() + "F2" + certificatePojo.getTwoFFileId();
+        String F3 = certificatePojo.getCode() + "F3" + certificatePojo.getThreeFFileId();
+        String Z2 = certificatePojo.getCode() + "Z2" + certificatePojo.getTwoZFileId();
+        String Z3 = certificatePojo.getCode() + "Z3" + certificatePojo.getThreeZFileId();
+        list.add(base + F2 + ".pdf");
+        list.add(base + F3 + ".pdf");
+        list.add(base + Z2 + ".pdf");
+        list.add(base + Z3 + ".pdf");
+        String zipName = "/webapp/files/zip/" + certificatePojo.getName() + certificatePojo.getCode() + "证书打包下载.zip";
+        ZipUtils.downloadZipFiles(list, zipName);
+        File file = new File(zipName);
+        if (file.exists()) {
+            byte[] data;
+            FileInputStream input = null;
+            try {
+                input = new FileInputStream(file);
+                data = new byte[input.available()];
+                input.read(data);
+                response.getOutputStream().write(data);
+            } catch (Exception e) {
+                System.out.println("zip文件处理异常：" + e);
             } finally {
                 try {
                     if (input != null) {
