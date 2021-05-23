@@ -58,8 +58,7 @@ public class MiniAppraisalRecordController {
     public R findByCode(String code) {
         CertificatePojo pojo = certificateDao.findOneByAppraisalCode(code);
         Map<String, Object> map = new HashMap<>();
-        map.put("three_z_file_id", pojo.getThreeZFileId());
-        map.put("two_z_file_id", pojo.getTwoZFileId());
+        map.put("pojo", pojo);
         return R.ok(map);
     }
 
