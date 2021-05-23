@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -44,6 +45,9 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
 
     @Resource
     private SendService sendService;
+
+    @Resource
+    private SendDao sendDao;
 
     @Autowired
     private JmsMessagingTemplate jmsMessagingTemplate;
@@ -62,20 +66,30 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
     public Long download(SendPojo sendPojo) {
         try {
             String url = sendPojo.getPdfUrl();
-            File file = FileUtil.file("/webapp/files/pdf/" + sendPojo.getCode() + ".pdf");
-            HttpUtil.downloadFile(url, file);
-            if (!file.exists() || file.length()==0){
-                return null;
+            if (url == null) {
+                if (sendPojo.getState().equals("2")) {
+                    sendPojo = httpConvertPdf(sendPojo);
+                    return download(sendPojo);
+                } else {
+                    sendPojo = httpConvertPdfResult(sendPojo);
+                    return download(sendPojo);
+                }
+            } else {
+                File file = FileUtil.file("/webapp/files/pdf/" + sendPojo.getCode() + ".pdf");
+                HttpUtil.downloadFile(url, file);
+                if (!file.exists() || file.length()==0){
+                    return null;
+                }
+                log.info("file name:{},path:{},length:{}",file.getName(),file.getPath(),file.length());
+                SysFileEntity sysFileEntity = SysFileEntity.builder().fileName(sendPojo.getCode() + ".pdf")
+                        .fileOldName(sendPojo.getCode() + ".pdf")
+                        .fileType("pdf").fileUploadTime(new Date()).fileUrl("/files/pdf/" + sendPojo.getCode() + ".pdf").build();
+                sysFileService.save(sysFileEntity);
+                sendPojo.setPdfId(sysFileEntity.getId());
+                sendPojo.setState("4");
+                sendService.updateById(sendPojo);
+                return sysFileEntity.getId();
             }
-            log.info("file name:{},path:{},length:{}",file.getName(),file.getPath(),file.length());
-            SysFileEntity sysFileEntity = SysFileEntity.builder().fileName(sendPojo.getCode() + ".pdf")
-                    .fileOldName(sendPojo.getCode() + ".pdf")
-                    .fileType("pdf").fileUploadTime(new Date()).fileUrl("/files/pdf/" + sendPojo.getCode() + ".pdf").build();
-            sysFileService.save(sysFileEntity);
-            sendPojo.setPdfId(sysFileEntity.getId());
-            sendPojo.setState("4");
-            sendService.updateById(sendPojo);
-            return sysFileEntity.getId();
         } catch (Exception e) {
             e.printStackTrace();
             log.error("定时任务生成PDF文件失败{}", sendPojo.toString());
@@ -127,6 +141,50 @@ public class SendServiceImpl extends ServiceImpl<SendDao, SendPojo> implements S
             e.printStackTrace();
             throw new RRException("生成PDF证书失败");
         }
+    }
+
+    public SendPojo httpConvertPdfResult(SendPojo sendPojo) {
+        String host = "https://api.9yuntu.cn";
+        String path = "/execute/GetOutputResult";
+        String method = "GET";
+        String appcode = "ef1ed3bef5a94a5a90129760008bafe5";
+        Map<String, String> headers = new HashMap();
+        headers.put("Authorization", "APPCODE " + appcode);
+        Map<String, String> querys = new HashMap();
+        querys.put("docID", sendPojo.getDocId());
+        querys.put("outputType", "pdf");
+        try {
+            HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
+            JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+            log.info("httpConvertPdf status:{},response:{},info:{}", response.getStatusLine(),JSONUtil.toJsonStr(response),jsonObject!=null?jsonObject.toJSONString():null);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                sendPojo.setState("-1");
+            } else {
+                String retCode = jsonObject.getString("retCode");
+                if ("0".equals(retCode)) {//API的0 代表直接转换成功
+                    sendPojo.setState("3");
+                    JSONArray arr = jsonObject.getJSONArray("outputURLs");
+                    sendPojo.setPdfUrl(String.valueOf(arr.get(0)));
+                } else if ("1".equals(retCode)) {//API的1 代表还在转换中
+                    sendPojo.setState("1");
+                    sendPojo.setDocId(jsonObject.getString("docID"));
+                } else if ("2".equals(retCode)) {//API的2 代表转换失败了
+                    sendPojo.setState("2");
+                }
+
+            }
+            this.updateById(sendPojo);
+
+            return sendPojo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RRException("生成PDF证书失败");
+        }
+    }
+
+    @Override
+    public List<SendPojo> findByCodeAndType(String code){
+        return sendDao.findAllByCodeLike(code);
     }
 
     public static void main(String[] args) {

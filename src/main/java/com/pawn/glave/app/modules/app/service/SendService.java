@@ -14,4 +14,7 @@ public interface SendService extends IService<SendPojo> {
     void send(SendPojo sendPojo);
     Long send1(SendPojo sendPojo);
 
+    Long download(SendPojo sendPojo);
+
+    List<SendPojo> findByCodeAndType(String code);
 }

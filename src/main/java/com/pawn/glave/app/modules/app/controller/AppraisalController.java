@@ -251,6 +251,22 @@ public class AppraisalController {
         return R.ok().put("data", appraisalPojo);
     }
 
+    @GetMapping(value = "/certificate/reCreateZs")
+    @Transactional
+    public R certificateCreate(@RequestParam("id") Long id) {
+        AppraisalPojo appraisalPojo = appraisalService.getById(id);
+        if (StringUtils.isEmpty(appraisalPojo.getCertificateCode())) {
+            return R.error("请先选择结果");
+        }
+        List<SendPojo> sendPojoList = sendService.findByCodeAndType(appraisalPojo.getCertificateCode() + "F");
+        if (sendPojoList != null && sendPojoList.size() > 0) {
+            sendPojoList.forEach(sendPojo -> {
+                sendService.download(sendPojo);
+            });
+        }
+        return R.ok();
+    }
+
     /**
      * 生成证书
      *
