@@ -39,7 +39,8 @@ public class SysFileController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ApiOperation("图片上传")
-    public R uploadImg(@RequestParam("file") MultipartFile file) {
+    public R uploadImg(@RequestParam("file") MultipartFile file, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         return sysFileService.upload(file);
     }
 
