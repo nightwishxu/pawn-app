@@ -65,7 +65,17 @@ public class SysFileController {
             byte[] data = new byte[(int) file.length()];
             inputStream.read(data);
             inputStream.close();
-            response.setContentType("image/png");
+//            response.setContentType("image/png");
+            if ("mp4".equals(sysFileEntity.getFileType())) {
+                response.setHeader("content-type", "video/mp4");
+            } else if ("jpg,jpeg,gif,png,bmp".contains(sysFileEntity.getFileType())) {
+                response.setHeader("content-type", "image/" + sysFileEntity.getFileType());
+            } else {
+                response.setHeader("Content-disposition", String.format("attachment;filename=\"%s\"", new String(sysFileEntity.getFileOldName().getBytes(), "ISO8859-1")));
+                response.setHeader("Content-Length", String.valueOf(file.length()));
+                response.setHeader("content-type", "application/octet-stream;charset=ISO8859-1");
+                response.setContentType("application/octet-stream;charset=ISO8859-1");
+            }
             OutputStream os = response.getOutputStream();
             os.write(data);
             os.flush();
