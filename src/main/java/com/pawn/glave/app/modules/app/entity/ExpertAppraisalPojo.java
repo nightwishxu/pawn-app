@@ -89,7 +89,7 @@ public class ExpertAppraisalPojo implements Serializable {
 
     @ApiModelProperty(value="典当价格（专家鉴定填写）")
     @ApiParam(value="典当价格（专家鉴定填写）")
-    private BigDecimal pawnPrice;
+    private String pawnPrice;
 
     @ApiModelProperty(value="鉴定人code（专家）")
     @ApiParam(value="鉴定人code（专家）")

@@ -175,7 +175,7 @@ public class Certificate implements Serializable {
 	 */
 	@ApiModelProperty(value="鉴定托底价")
 	@ApiParam(value="鉴定托底价")
-	private java.math.BigDecimal price;
+	private String price;
 
 	/**
 	 *鉴定说明
@@ -194,11 +194,11 @@ public class Certificate implements Serializable {
 
 	@ApiModelProperty(value="估价")
 	@ApiParam(value="估价")
-	private BigDecimal authPriceTest;
+	private String authPriceTest;
 
 	@ApiModelProperty(value="鉴定价")
 	@ApiParam(value="鉴定价")
-	private BigDecimal authPrice;
+	private String authPrice;
 
 	@ApiModelProperty(value="鉴定结果")
 	@ApiParam(value="鉴定结果")

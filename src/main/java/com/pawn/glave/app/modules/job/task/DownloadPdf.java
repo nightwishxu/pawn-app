@@ -1,24 +1,14 @@
 package com.pawn.glave.app.modules.job.task;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.StreamProgress;
-import cn.hutool.core.lang.Console;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.pawn.glave.app.common.utils.HttpUtils;
-import com.pawn.glave.app.modules.app.entity.Certificate;
-import com.pawn.glave.app.modules.app.entity.CertificatePojo;
 import com.pawn.glave.app.modules.app.entity.SendPojo;
 import com.pawn.glave.app.modules.app.service.CertificateService;
 import com.pawn.glave.app.modules.app.service.SendService;
 import com.pawn.glave.app.modules.sys.entity.SysFileEntity;
 import com.pawn.glave.app.modules.sys.service.SysFileService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

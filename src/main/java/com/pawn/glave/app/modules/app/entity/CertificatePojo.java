@@ -86,7 +86,7 @@ public class CertificatePojo implements Serializable {
 
     @ApiModelProperty(value="典当价格（专家鉴定填写）")
     @ApiParam(value="典当价格（专家鉴定填写）")
-    private BigDecimal pawnPrice;
+    private String pawnPrice;
 
     @ApiModelProperty(value="图片（4张）")
     @ApiParam(value="图片（4张）")
